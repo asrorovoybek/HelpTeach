@@ -99,7 +99,21 @@ class AdminState(StatesGroup):
 # ──────────────────────────────────────────
 
 def normalize_full_name(text: str) -> str:
-    return " ".join((text or "").strip().split())
+    text = " ".join((text or "").strip().split())
+
+    apostrophe_map = {
+        "‘": "ʻ",
+        "’": "ʻ",
+        "'": "ʻ",
+        "`": "ʻ",
+        "ʼ": "ʻ",
+        "´": "ʻ",
+    }
+
+    for old, new in apostrophe_map.items():
+        text = text.replace(old, new)
+
+    return text
 
 
 def is_valid_full_name(text: str) -> bool:
@@ -118,7 +132,7 @@ def is_valid_full_name(text: str) -> bool:
         if len(part) < 2:
             return False
 
-    if not re.fullmatch(r"[A-Za-zÀ-ÿА-Яа-яҒғҚқҲҳЎўЁёʼ'`\-\s]+", text):
+    if not re.fullmatch(r"[A-Za-zÀ-ÿĀ-žА-Яа-яҒғҚқҲҳЎўЁёʻ\- ]+", text):
         return False
 
     lowered = text.lower()
